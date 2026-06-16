@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Desi Flavours | North Kellyville</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Georgia', serif;
+      background: #0d0d0d;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+    }
+
+    /* ── Header ── */
+    .brand-header {
+      width: 100%;
+      max-width: 1100px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 18px 30px;
+      background: #0d0d0d;
+    }
+    .brand-name {
+      font-size: 1.8rem;
+      font-weight: bold;
+      color: #e8a825;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+    }
+    .brand-tagline {
+      font-size: 0.75rem;
+      color: #aaa;
+      letter-spacing: 1px;
+      margin-top: 3px;
+    }
+    .header-cta {
+      background: #e8a825;
+      color: #0d0d0d;
+      border: none;
+      padding: 10px 22px;
+      border-radius: 25px;
+      font-size: 0.85rem;
+      font-weight: bold;
+      letter-spacing: 1px;
+      cursor: pointer;
+      text-decoration: none;
+      transition: background 0.3s;
+    }
+    .header-cta:hover { background: #f5c842; }
+
+    /* ── Carousel Wrapper ── */
+    .carousel-wrapper {
+      position: relative;
+      width: 100%;
+      max-width: 1100px;
+      overflow: hidden;
+      border-radius: 16px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.7);
+    }
+
+    /* ── Slides Track ── */
+    .slides-track {
+      display: flex;
+      transition: transform 0.7s cubic-bezier(0.77, 0, 0.175, 1);
+      will-change: transform;
+    }
+
+    .slide {
+      min-width: 100%;
+      position: relative;
+      height: 520px;
+      overflow: hidden;
+    }
+
+    .slide img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center;
+      display: block;
+      transition: transform 6s ease;
+    }
+    .slide.active img {
+      transform: scale(1.05);
+    }
+
+    /* ── Dark gradient overlay ── */
+    .slide-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(
+        to right,
+        rgba(0,0,0,0.80) 0%,
+        rgba(0,0,0,0.38) 55%,
+        rgba(0,0,0,0.10) 100%
+      );
+    }
+
+    /* ── Slide Text ── */
+    .slide-content {
+      position: absolute;
+      bottom: 60px;
+      left: 50px;
+      color: #fff;
+      max-width: 480px;
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 0.6s ease 0.3s, transform 0.6s ease 0.3s;
+    }
+    .slide.active .slide-content {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    .slide-badge {
+      display: inline-block;
+      background: #e8a825;
+      color: #0d0d0d;
+      font-size: 0.7rem;
+      font-weight: bold;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      padding: 4px 12px;
+      border-radius: 20px;
+      margin-bottom: 12px;
+    }
+    .slide-title {
+      font-size: 2.6rem;
+      font-weight: bold;
+      line-height: 1.15;
+      color: #fff;
+      text-shadow: 0 2px 10px rgba(0,0,0,0.5);
+      margin-bottom: 12px;
+    }
+    .slide-desc {
+      font-size: 0.95rem;
+      color: #ddd;
+      line-height: 1.6;
+      margin-bottom: 22px;
+    }
+    .slide-cta {
+      display: inline-block;
+      background: #e8a825;
+      color: #0d0d0d;
+      text-decoration: none;
+      padding: 12px 28px;
+      border-radius: 30px;
+      font-weight: bold;
+      font-size: 0.88rem;
+      letter-spacing: 1px;
+      transition: background 0.3s, transform 0.2s;
+    }
+    .slide-cta:hover {
+      background: #f5c842;
+      transform: scale(1.04);
+    }
+
+    /* ── Arrows ── */
+    .arrow {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      background: rgba(232,168,37,0.85);
+      border: none;
+      color: #0d0d0d;
+      font-size: 1.4rem;
+      width: 46px;
+      height: 46px;
+      border-radius: 50%;
+      cursor: pointer;
+      z-index: 10;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.3s, transform 0.2s;
+    }
+    .arrow:hover { background: #f5c842; transform: translateY(-50%) scale(1.1); }
+    .arrow-left  { left: 18px; }
+    .arrow-right { right: 18px; }
+
+    /* ── Dots ── */
+    .dots {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      padding: 18px 0 10px;
+    }
+    .dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: #555;
+      cursor: pointer;
+      transition: background 0.3s, transform 0.3s;
+      border: none;
+    }
+    .dot.active {
+      background: #e8a825;
+      transform: scale(1.35);
+    }
+
+    /* ── Slide counter ── */
+    .slide-counter {
+      position: absolute;
+      top: 18px;
+      right: 22px;
+      color: rgba(255,255,255,0.75);
+      font-size: 0.8rem;
+      letter-spacing: 2px;
+      z-index: 10;
+      background: rgba(0,0,0,0.35);
+      padding: 4px 10px;
+      border-radius: 20px;
+    }
+
+    /* ── Progress bar ── */
+    .progress-bar {
+      height: 3px;
+      background: #222;
+      width: 100%;
+      max-width: 1100px;
+    }
+    .progress-fill {
+      height: 100%;
+      background: #e8a825;
+      width: 0%;
+      transition: width linear;
+    }
+
+    /* ── Info strip ── */
+    .info-strip {
+      width: 100%;
+      max-width: 1100px;
+      display: flex;
+      justify-content: center;
+      gap: 32px;
+      padding: 14px 20px;
+      background: #111;
+      font-size: 0.78rem;
+      color: #aaa;
+      letter-spacing: 0.5px;
+      flex-wrap: wrap;
+    }
+    .info-strip span { display: flex; align-items: center; gap: 6px; }
+    .info-strip strong { color: #e8a825; }
+
+    /* ── Responsive ── */
+    @media (max-width: 768px) {
+      .slide { height: 360px; }
+      .slide-title { font-size: 1.7rem; }
+      .slide-content { left: 22px; bottom: 40px; max-width: 300px; }
+      .brand-name { font-size: 1.3rem; }
+      .info-strip { gap: 16px; font-size: 0.72rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Header -->
+  <header class="brand-header">
+    <div>
+      <div class="brand-name">Desi Flavours</div>
+      <div class="brand-tagline">Authentic Indian Cuisine &nbsp;&middot;&nbsp; North Kellyville, NSW</div>
+    </div>
+    <a href="https://desiflavours.com.au/order-now" target="_blank" class="header-cta">Order Online &rarr;</a>
+  </header>
+
+  <!-- Carousel -->
+  <div class="carousel-wrapper">
+
+    <div class="slide-counter" id="counter">1 / 5</div>
+
+    <div class="slides-track" id="track">
+
+      <!-- Slide 1: Chicken Biryani -->
+      <div class="slide active">
+        <img
+          src="https://storage.googleapis.com/crm-conversations-ai-production/ask-ai-attachments/NBfmJfKrm2QR8vGL041E/56f55MCzT2ChNtPLMPik/X1czLPGcJZNuAXyjwxHM/b1e0f17f-2703-4c6e-9d7c-873578475b5f.jpg"
+          alt="Chicken Biryani at Desi Flavours" />
+        <div class="slide-overlay"></div>
+        <div class="slide-content">
+          <span class="slide-badge">⭐ Signature Dish</span>
+          <h2 class="slide-title">Chicken<br>Biryani</h2>
+          <p class="slide-desc">Fluffy saffron-streaked basmati rice slow-cooked with tender chicken, crispy fried onions, and aromatic whole spices. Served with cooling raita and rich curry on the side.</p>
+          <a href="https://desiflavours.com.au/order-now" target="_blank" class="slide-cta">Order Now &rarr;</a>
+        </div>
+      </div>
+
+      <!-- Slide 2: Butter Chicken -->
+      <div class="slide">
+        <img
+          src="https://storage.googleapis.com/crm-conversations-ai-production/ask-ai-attachments/NBfmJfKrm2QR8vGL041E/56f55MCzT2ChNtPLMPik/X1czLPGcJZNuAXyjwxHM/1ff02464-768a-4cc8-8a61-59f77cef0529.jpg"
+          alt="Butter Chicken at Desi Flavours" />
+        <div class="slide-overlay"></div>
+        <div class="slide-content">
+          <span class="slide-badge">🧡 Fan Favourite</span>
+          <h2 class="slide-title">Butter<br>Chicken</h2>
+          <p class="slide-desc">Velvety, rich tomato-cream sauce with tender chicken pieces, finished with a swirl of cream and fresh ginger. A comforting classic served the authentic way.</p>
+          <a href="https://desiflavours.com.au/order-now" target="_blank" class="slide-cta">Order Now &rarr;</a>
+        </div>
+      </div>
+
+      <!-- Slide 3: Papdi Chaat -->
+      <div class="slide">
+        <img
+          src="https://storage.googleapis.com/crm-conversations-ai-production/ask-ai-attachments/NBfmJfKrm2QR8vGL041E/56f55MCzT2ChNtPLMPik/X1czLPGcJZNuAXyjwxHM/45e13192-8fae-45c2-b4c4-d360d3b52dcf.jpg"
+          alt="Papdi Chaat at Desi Flavours" />
+        <div class="slide-overlay"></div>
+        <div class="slide-content">
+          <span class="slide-badge">🍿 Street Food Favourite</span>
+          <h2 class="slide-title">Papdi<br>Chaat</h2>
+          <p class="slide-desc">Crispy fried wafers layered with creamy yoghurt, tangy tamarind chutney, crunchy sev, fresh onions, and cilantro. The perfect burst of sweet, sour, and spice.</p>
+          <a href="https://desiflavours.com.au/order-now" target="_blank" class="slide-cta">Order Now &rarr;</a>
+        </div>
+      </div>
+
+      <!-- Slide 4: Gulab Jamun -->
+      <div class="slide">
+        <img
+          src="https://storage.googleapis.com/crm-conversations-ai-production/ask-ai-attachments/NBfmJfKrm2QR8vGL041E/56f55MCzT2ChNtPLMPik/X1czLPGcJZNuAXyjwxHM/85c98f77-0a47-4440-a98a-8f2c3fcc2999.jpg"
+          alt="Gulab Jamun at Desi Flavours" />
+        <div class="slide-overlay"></div>
+        <div class="slide-content">
+          <span class="slide-badge">🍮 Sweet Indulgence</span>
+          <h2 class="slide-title">Gulab<br>Jamun</h2>
+          <p class="slide-desc">Soft, golden dough balls soaked in fragrant rose-cardamom syrup, topped with delicate coconut flakes. The perfect sweet ending to your Desi Flavours experience.</p>
+          <a href="https://desiflavours.com.au/order-now" target="_blank" class="slide-cta">Order Now &rarr;</a>
+        </div>
+      </div>
+
+      <!-- Slide 5: Tandoori Chicken -->
+      <div class="slide">
+        <img
+          src="https://storage.googleapis.com/crm-conversations-ai-production/ask-ai-attachments/NBfmJfKrm2QR8vGL041E/56f55MCzT2ChNtPLMPik/X1czLPGcJZNuAXyjwxHM/f1deb6ab-e989-4d12-83c1-70d41d763ba3.jpg"
+          alt="Tandoori Chicken at Desi Flavours" />
+        <div class="slide-overlay"></div>
+        <div class="slide-content">
+          <span class="slide-badge">🔥 From the Tandoor</span>
+          <h2 class="slide-title">Tandoori<br>Chicken</h2>
+          <p class="slide-desc">Succulent chicken marinated in yoghurt and spices, grilled over high heat on a sizzling iron platter. Served with fresh greens, colourful peppers, and cool mint chutney.</p>
+          <a href="https://desiflavours.com.au/order-now" target="_blank" class="slide-cta">Order Now &rarr;</a>
+        </div>
+      </div>
+
+    </div><!-- /slides-track -->
+
+    <button class="arrow arrow-left"  onclick="move(-1)">&#8592;</button>
+    <button class="arrow arrow-right" onclick="move(1)">&#8594;</button>
+
+  </div><!-- /carousel-wrapper -->
+
+  <!-- Progress bar -->
+  <div class="progress-bar"><div class="progress-fill" id="progress"></div></div>
+
+  <!-- Dots -->
+  <div class="dots" id="dots"></div>
+
+  <!-- Info Strip -->
+  <div class="info-strip">
+    <span>&#128205; <strong>Shop 10, 21 Hezlett Rd, North Kellyville NSW 2155</strong></span>
+    <span>&#128222; <strong>0421 983 984</strong></span>
+    <span>&#128336; <strong>Open:</strong> Mon &amp; Wed&ndash;Sun &nbsp;11am &ndash; 10pm</span>
+    <span>&#127881; <strong>10% Off</strong> when you order online!</span>
+  </div>
+
+  <!-- JavaScript -->
+  <script>
+    const track    = document.getElementById('track');
+    const counter  = document.getElementById('counter');
+    const progress = document.getElementById('progress');
+    const dotsEl   = document.getElementById('dots');
+    const slides   = document.querySelectorAll('.slide');
+    const total    = slides.length;
+    const DELAY    = 5000;
+
+    let current = 0;
+    let timer;
+
+    // Build dots
+    slides.forEach((_, i) => {
+      const d = document.createElement('button');
+      d.className = 'dot' + (i === 0 ? ' active' : '');
+      d.setAttribute('aria-label', 'Go to slide ' + (i + 1));
+      d.addEventListener('click', () => goTo(i));
+      dotsEl.appendChild(d);
+    });
+
+    function goTo(n) {
+      slides[current].classList.remove('active');
+      dotsEl.children[current].classList.remove('active');
+      current = (n + total) % total;
+      slides[current].classList.add('active');
+      dotsEl.children[current].classList.add('active');
+      track.style.transform = `translateX(-${current * 100}%)`;
+      counter.textContent = (current + 1) + ' / ' + total;
+      resetProgress();
+    }
+
+    function move(dir) { goTo(current + dir); }
+
+    function resetProgress() {
+      clearTimeout(timer);
+      progress.style.transition = 'none';
+      progress.style.width = '0%';
+      progress.offsetWidth; // force reflow
+      progress.style.transition = `width ${DELAY}ms linear`;
+      progress.style.width = '100%';
+      timer = setTimeout(() => move(1), DELAY);
+    }
+
+    // Keyboard navigation
+    document.addEventListener('keydown', e => {
+      if (e.key === 'ArrowLeft')  move(-1);
+      if (e.key === 'ArrowRight') move(1);
+    });
+
+    // Touch / swipe support
+    let touchStartX = 0;
+    track.addEventListener('touchstart', e => { touchStartX = e.touches[0].clientX; }, { passive: true });
+    track.addEventListener('touchend',   e => {
+      const diff = touchStartX - e.changedTouches[0].clientX;
+      if (Math.abs(diff) > 50) move(diff > 0 ? 1 : -1);
+    });
+
+    // Kick off
+    resetProgress();
+  </script>
+
+</body>
+</html>
